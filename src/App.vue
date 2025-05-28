@@ -3,7 +3,7 @@ import Navbar from "@/components/composites/Navbar.vue";
 </script>
 
 <template>
-<body class="bg-gray-950 h-screen">
+<body class="bg-background h-screen">
   <Navbar />
 </body>
 </template>
