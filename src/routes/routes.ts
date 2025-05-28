@@ -1,11 +1,25 @@
-import {createMemoryHistory, createRouter, type RouteRecordRaw} from "vue-router";
-import Home from "../pages/Home.vue";
+import {createWebHistory, createRouter, type RouteRecordRaw} from "vue-router";
 
 const routes: RouteRecordRaw[] = [
-    {path: "/", name: "Home",component: Home},
-];
+    {path: "/", name: "home",component: () => import("../views/Home.vue")},
+    {path: "/myTabs", name: "myTabs",component: () => import("../views/MyTabs.vue")},
+    {path: "/community", name: "community",component: () => import("../views/Community.vue")},
+    {path: "/newTab", name: "newTab",component: () => import("../views/NewTab.vue")},
+    {path: "/settings", name: "settings",component: () => import("../views/Settings.vue")},
+    {path: "/learn", name: "learn",component: () => import("../views/Learn.vue")},
+    { path: '/:pathMatch(.*)*', name: 'notFound', component: () => import("../views/NotFound.vue") },
+] as const;
+
+// This is to automatically generate a union type of route name, for type safety and autocompletion for the route names
+export type RouteName = 'home'
+    | 'myTabs'
+    | 'community'
+    | 'newTab'
+    | 'settings'
+    | 'learn'
+    | 'notFound'
 
 export const router = createRouter({
-    history: createMemoryHistory(),
+    history: createWebHistory(),
     routes
 })
