@@ -5,13 +5,13 @@ import { computed } from "vue";
 
 const route = useRoute();
 
-// const isAuth = computed(() => {
-//   return route.meta.hideNavbar;
-// });
+const isAuth = computed(() => {
+  return route.meta.hideNavbar;
+});
 </script>
 
 <template>
-  <Navbar />
+  <Navbar v-if="!isAuth" />
   <body class="bg-background h-screen">
     <RouterView />
   </body>
