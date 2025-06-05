@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import AuthLayout from "../layouts/AuthLayout.vue";
 import { z } from "zod";
 import { Form, ErrorMessage } from "vee-validate";
@@ -9,6 +10,12 @@ import { RouterLink } from "vue-router";
 import Card from "../components/ui/Card/Card.vue";
 import { signUp } from "../database/database";
 import { useRouter } from "vue-router";
+import { type FormActions } from "vee-validate";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import { Loader2 } from "lucide-vue-next";
+
+const loading = ref(false);
 
 const router = useRouter();
 
@@ -21,14 +28,25 @@ const schema = toTypedSchema(
   }),
 );
 
-async function onSubmit(values: any) {
+async function onSubmit(values: any, { resetForm }: FormActions<any>) {
+  if (loading.value) return;
   console.log("submitting");
+  loading.value = true;
   try {
     const signUpData = await signUp(values.email, values.password);
     console.log(signUpData);
     router.push({ name: "home" });
   } catch (error) {
-    console.error(error);
+    if (error instanceof Error) {
+      toast.error(`${error.message}`, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 5000,
+      });
+      console.error(error.message, "This is from Signup page");
+    }
+    resetForm();
+  } finally {
+    loading.value = false;
   }
 }
 </script>
@@ -77,7 +95,22 @@ async function onSubmit(values: any) {
           <ErrorMessage name="confirmPassword" />
         </FormControl>
 
-        <Button type="submit">Sign up</Button>
+        <Button
+          type="submit"
+          :disabled="loading"
+          :class="{
+            'opacity-50 cursor-not-allowed': loading,
+          }"
+        >
+          <span
+            v-if="loading"
+            class="flex justify-center items-center gap-2"
+          >
+            <Loader2 class="w-4 h-4 mr-2 animate-spin" />
+            Please wait
+          </span>
+          <span v-else> Sign up </span>
+        </Button>
 
         <div>
           <p class="text-gray-500">
@@ -89,5 +122,3 @@ async function onSubmit(values: any) {
     </Form>
   </AuthLayout>
 </template>
-
-<style scoped></style>
