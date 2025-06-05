@@ -16,12 +16,13 @@ const schema = toTypedSchema(
   z.object({
     username: z.string().min(3),
     email: z.string().email(),
-    password: z.string().min(8),
-    confirmPassword: z.string().min(8),
+    password: z.string(),
+    confirmPassword: z.string(),
   }),
 );
 
 async function onSubmit(values: any) {
+  console.log("submitting");
   try {
     const signUpData = await signUp(values.email, values.password);
     console.log(signUpData);
@@ -35,7 +36,7 @@ async function onSubmit(values: any) {
 <template>
   <AuthLayout>
     <template #header>Sign up to JamForge</template>
-    <Form :validation-schema="schema" @submit="onSubmit">
+    <Form novalidate @submit="onSubmit">
       <Card>
         <FormControl>
           <Label for="userName">User Name</Label>
