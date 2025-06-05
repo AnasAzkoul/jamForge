@@ -7,6 +7,10 @@ import { Button } from "../components/ui/button";
 import { FormControl, Input, Label } from "../components/ui/Form";
 import { RouterLink } from "vue-router";
 import Card from "../components/ui/Card/Card.vue";
+import { signUp } from "../database/database";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const schema = toTypedSchema(
   z.object({
@@ -17,8 +21,14 @@ const schema = toTypedSchema(
   }),
 );
 
-function onSubmit(values: any) {
-  console.log(values);
+async function onSubmit(values: any) {
+  try {
+    const signUpData = await signUp(values.email, values.password);
+    console.log(signUpData);
+    router.push({ name: "home" });
+  } catch (error) {
+    console.error(error);
+  }
 }
 </script>
 
